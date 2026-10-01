@@ -23,7 +23,7 @@ export default function VideoBackground() {
 
     // Playback function triggered on cursor or pointer event
     const startPlayback = () => {
-      if (!hasStartedPlayback.current) {
+      if (!hasStartedPlayback.current && video && !video.ended) {
         hasStartedPlayback.current = true;
         const playPromise = video.play();
         if (playPromise !== undefined) {
@@ -33,6 +33,18 @@ export default function VideoBackground() {
         }
       }
     };
+
+    // Smoothly hold on final frame when ended (do not loop or reset)
+    const handleVideoEnded = () => {
+      if (video) {
+        video.pause();
+        if (video.duration && !isNaN(video.duration)) {
+          video.currentTime = Math.max(0, video.duration - 0.05);
+        }
+      }
+    };
+
+    video.addEventListener('ended', handleVideoEnded);
 
     // Trigger immediate video playback on mount & fallback to pointer activity
     startPlayback();
@@ -98,6 +110,7 @@ export default function VideoBackground() {
       document.addEventListener('mouseleave', handleMouseLeave);
 
       return () => {
+        video.removeEventListener('ended', handleVideoEnded);
         window.removeEventListener('mousemove', startPlayback);
         window.removeEventListener('pointermove', startPlayback);
         window.removeEventListener('touchstart', startPlayback);
@@ -108,6 +121,7 @@ export default function VideoBackground() {
     }
 
     return () => {
+      video.removeEventListener('ended', handleVideoEnded);
       window.removeEventListener('mousemove', startPlayback);
       window.removeEventListener('pointermove', startPlayback);
       window.removeEventListener('touchstart', startPlayback);
@@ -130,7 +144,6 @@ export default function VideoBackground() {
           src="/vedio/Bitemoji.mp4"
           autoPlay
           muted
-          loop
           playsInline
           preload="auto"
           className="w-full h-full object-cover object-center brightness-[1.02] contrast-[1.01] opacity-90 transition-opacity duration-300"
