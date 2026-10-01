@@ -41,6 +41,9 @@ export default function VideoBackground() {
 
     video.addEventListener('ended', handleVideoEnded);
 
+    // Trigger immediate video playback on mount & fallback to pointer activity
+    startPlayback();
+
     // Attach listeners for instant play response on any mouse or pointer activity
     window.addEventListener('mousemove', startPlayback, { passive: true });
     window.addEventListener('pointermove', startPlayback, { passive: true });
@@ -134,9 +137,11 @@ export default function VideoBackground() {
         <video
           ref={videoRef}
           src="/vedio/Bitemoji.mp4"
+          autoPlay
           muted
+          loop
           playsInline
-          preload="metadata"
+          preload="auto"
           className="w-full h-full object-cover object-center brightness-[1.02] contrast-[1.01] opacity-90 transition-opacity duration-300"
           aria-hidden="true"
         />
