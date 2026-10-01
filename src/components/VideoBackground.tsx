@@ -34,13 +34,6 @@ export default function VideoBackground() {
       }
     };
 
-    // Freeze video on the final frame when ended
-    const handleVideoEnded = () => {
-      video.pause();
-    };
-
-    video.addEventListener('ended', handleVideoEnded);
-
     // Trigger immediate video playback on mount & fallback to pointer activity
     startPlayback();
 
@@ -105,7 +98,6 @@ export default function VideoBackground() {
       document.addEventListener('mouseleave', handleMouseLeave);
 
       return () => {
-        video.removeEventListener('ended', handleVideoEnded);
         window.removeEventListener('mousemove', startPlayback);
         window.removeEventListener('pointermove', startPlayback);
         window.removeEventListener('touchstart', startPlayback);
@@ -116,7 +108,6 @@ export default function VideoBackground() {
     }
 
     return () => {
-      video.removeEventListener('ended', handleVideoEnded);
       window.removeEventListener('mousemove', startPlayback);
       window.removeEventListener('pointermove', startPlayback);
       window.removeEventListener('touchstart', startPlayback);
